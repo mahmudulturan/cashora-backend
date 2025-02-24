@@ -1,0 +1,214 @@
+{
+    "/user/all": {
+        "get": {
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "tags": [
+                "User"
+            ],
+            "summary": "Get all users",
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseWithPaginationData"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/searchKey"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/page"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "$ref": "#/components/parameters/fields"
+                },
+                {
+                    "$ref": "#/components/parameters/populate"
+                }
+            ]
+        }
+    },
+    "/user/me": {
+        "get": {
+            "tags": [
+                "User"
+            ],
+            "summary": "Get current user",
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseWithData"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            }
+        },
+        "put": {
+            "tags": [
+                "User"
+            ],
+            "summary": "Update current user",
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "object",
+                                    "properties": {
+                                        "firstName": {
+                                            "type": "string",
+                                            "description": "First name of the user"
+                                        },
+                                        "lastName": {
+                                            "type": "string",
+                                            "description": "Last name of the user"
+                                        }
+                                    }
+                                },
+                                "dateOfBirth": {
+                                    "type": "string",
+                                    "description": "Date of birth of the user"
+                                },
+                                "gender": {
+                                    "type": "string",
+                                    "description": "Gender of the user",
+                                    "enum": [
+                                        "male",
+                                        "female",
+                                        "other"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            }
+        }
+    },
+    "/user/status/{id}": {
+        "patch": {
+            "tags": [
+                "User"
+            ],
+            "summary": "Update user status",
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "enum": [
+                                        "active",
+                                        "blocked"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/user/{id}": {
+        "delete": {
+            "tags": [
+                "User"
+            ],
+            "summary": "Delete user",
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    }
+}

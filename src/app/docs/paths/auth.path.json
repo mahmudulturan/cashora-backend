@@ -1,0 +1,327 @@
+{
+    "/auth/register": {
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Register a new user",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            ],
+                            "properties": {
+                                "role": {
+                                    "readOnly": true
+                                },
+                                "status": {
+                                    "readOnly": true
+                                },
+                                "isEmailVerified": {
+                                    "readOnly": true
+                                },
+                                "isDeleted": {
+                                    "readOnly": true
+                                },
+                                "createdAt": {
+                                    "readOnly": true
+                                },
+                                "updatedAt": {
+                                    "readOnly": true
+                                },
+                                "username": {
+                                    "readOnly": true
+                                },
+                                "user": {
+                                    "readOnly": true
+                                },
+                                "gender": {
+                                    "readOnly": true
+                                },
+                                "profileImg": {
+                                    "readOnly": true
+                                }
+                            },
+                            "required": [
+                                "localLicense",
+                                "referal"
+                            ]
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "$ref": "#/components/responses/SuccessCreatedResponse"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "409": {
+                    "$ref": "#/components/responses/AlreadyExistsErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/login": {
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Login a user",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "email",
+                                "password"
+                            ]
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseWithData"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/password/change": {
+        "patch": {
+            "tags": [
+                "Authentication"
+            ],
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "summary": "Change user password",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "oldPassword": {
+                                    "type": "string"
+                                },
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "oldPassword",
+                                "newPassword"
+                            ]
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/email/verification/{email}": {
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Send verification email",
+            "parameters": [
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "409": {
+                    "$ref": "#/components/responses/AlreadyExistsErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/email/verify/{token}": {
+        "patch": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Verify email",
+            "parameters": [
+                {
+                    "name": "token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "409": {
+                    "$ref": "#/components/responses/AlreadyExistsErrorResponse"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/password/reset-email/{email}": {
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Send reset password email",
+            "parameters": [
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/password/reset/{token}": {
+        "patch": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Reset password",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "400": {
+                    "$ref": "#/components/responses/ValidationErrorResponse"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/token/refresh": {
+        "post": {
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Refresh token",
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            }
+        }
+    },
+    "/auth/logout": {
+        "get": {
+            "security": [
+                {
+                    "cookieAuth": []
+                }
+            ],
+            "tags": [
+                "Authentication"
+            ],
+            "summary": "Logout user",
+            "responses": {
+                "200": {
+                    "$ref": "#/components/responses/SuccessResponseBase"
+                },
+                "401": {
+                    "$ref": "#/components/responses/UnauthorizedErrorResponse"
+                }
+            }
+        }
+    }
+}

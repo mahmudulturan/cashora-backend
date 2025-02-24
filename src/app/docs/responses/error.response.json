@@ -1,0 +1,162 @@
+{
+    "ValidationErrorResponse": {
+        "description": "Validation error response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 400
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Validation Error"
+                        },
+                        "errorMessages": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "First name is required"
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": "firstName"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "UnauthorizedErrorResponse": {
+        "description": "Unauthorized response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 404
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Unauthorized Access"
+                        },
+                        "errorMessages": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Unauthorized Access"
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "NotFoundErrorResponse": {
+        "description": "Not found error response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 404
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "User not found"
+                        },
+                        "errorMessages": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "User not found"
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "AlreadyExistsErrorResponse": {
+        "description": "Already exists error response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 409
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "A user already registered with this email."
+                        },
+                        "errorMessages": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "A user already registered with this email."
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "example": ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

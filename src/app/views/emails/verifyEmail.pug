@@ -1,0 +1,22 @@
+extends layouts/main
+
+block content
+  p Hello #{name},
+  p
+    | Thank you for signing up with 
+    strong Example App
+    | ! To complete your registration and access all our features, we need to verify your email address.
+  
+  div(style='background-color: #f8f9fa; border-left: 4px solid #00C853; padding: 15px; margin: 20px 0; text-align: center;')
+    h2(style='color: #1B3635; margin-top: 0; font-size: 18px;') Your Verification Code
+    p(style='font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 10px 0;') #{verificationCode}
+    p(style='font-size: 14px; margin: 0;') This verification code is valid for 30 minutes
+
+  p(style='font-size: 16px; text-align: center;') Or
+  .text-center
+    a.btn(href=verificationUrl) Verify My Email
+
+  p.text-muted If the button doesn't work, you can copy and paste this link into your browser:
+  p.text-muted(style="word-break: break-all;") #{verificationUrl}
+  p.text-muted This verification link and code are valid for the next 30 minutes.
+  p.text-muted If you did not create an account with Example App, please disregard this email.

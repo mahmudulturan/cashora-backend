@@ -1,0 +1,135 @@
+{
+    "SuccessCreatedResponse": {
+        "description": "Successfully create response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 201
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Data created successfully"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "SuccessResponseBase": {
+        "description": "Success response",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 200
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Data updated successfully"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "SuccessResponseWithData": {
+        "description": "Successful response with data",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 200
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Data fetched successfully"
+                        },
+                        "data": {
+                            "type": "object",
+                            "example": {}
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "SuccessResponseWithPaginationData": {
+        "description": "Successfull response with pagination data",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "success": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "status": {
+                            "type": "integer",
+                            "example": 200
+                        },
+                        "message": {
+                            "type": "string",
+                            "example": "Data fetched successfully"
+                        },
+                        "data": {
+                            "type": "object",
+                            "properties": {
+                                "meta": {
+                                    "type": "object",
+                                    "properties": {
+                                        "page": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "limit": {
+                                            "type": "number",
+                                            "example": 10
+                                        },
+                                        "totalData": {
+                                            "type": "number",
+                                            "example": 10
+                                        },
+                                        "totalPage": {
+                                            "type": "number",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "result": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "example": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

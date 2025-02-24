@@ -1,0 +1,115 @@
+{
+    "User": {
+        "type": "object",
+        "properties": {
+            "_id": {
+                "type": "string",
+                "readOnly": true
+            },
+            "name": {
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "description": "First name of the user"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Last name of the user"
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "lastName"
+                ]
+            },
+            "email": {
+                "type": "string",
+                "description": "Email address of the user"
+            },
+            "phone": {
+                "type": "string",
+                "description": "Phone number of the user",
+                "minLength": 10
+            },
+            "username": {
+                "type": "string",
+                "description": "Username of the user"
+            },
+            "password": {
+                "type": "string",
+                "description": "Password of the user"
+            },
+            "dateOfBirth": {
+                "type": "string",
+                "description": "Date of birth of the user"
+            },
+            "profileImg": {
+                "type": "string",
+                "description": "Profile image URL of the user"
+            },
+            "user": {
+                "type": "string",
+                "description": "ObjectId referencing a user",
+                "pattern": "^[a-fA-F0-9]{24}$"
+            },
+            "gender": {
+                "type": "string",
+                "description": "Gender of the user",
+                "enum": [
+                    "male",
+                    "female",
+                    "other"
+                ]
+            },
+            "role": {
+                "type": "string",
+                "description": "Role of the user",
+                "enum": [
+                    "user",
+                    "instructor",
+                    "admin"
+                ],
+                "default": "user"
+            },
+            "status": {
+                "type": "string",
+                "description": "Status of the user",
+                "enum": [
+                    "active",
+                    "blocked"
+                ],
+                "default": "active"
+            },
+            "isEmailVerified": {
+                "type": "boolean",
+                "description": "Email verification status of the user",
+                "default": false
+            },
+            "isDeleted": {
+                "type": "boolean",
+                "description": "Deletion status of the user",
+                "default": false
+            },
+            "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of when the user was created"
+            },
+            "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of when the user was last updated"
+            }
+        },
+        "required": [
+            "name",
+            "email",
+            "phone",
+            "username",
+            "password",
+            "gender",
+            "profileImg"
+        ]
+    }
+}
