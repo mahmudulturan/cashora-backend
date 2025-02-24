@@ -17,16 +17,12 @@ const requiredEnvVars = {
     email_verification_token_secret: process.env.EMAIL_VERIFICATION_TOKEN_SECRET,
     gmail_id: process.env.GMAIL_USER,
     gmail_app_password: process.env.GMAIL_APP_PASSWORD,
-    stripe_client_secret: process.env.STRIPE_CLIENT_SECRET,
     admin_email: process.env.ADMIN_EMAIL,
     admin_pass: process.env.ADMIN_PASS,
     admin_phone: process.env.ADMIN_PHONE,
     admin_first_name: process.env.ADMIN_FIRST_NAME,
     admin_last_name: process.env.ADMIN_LAST_NAME,
     admin_username: process.env.ADMIN_USERNAME,
-    cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
-    cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET
 };
 
 // Check for missing environment variables
@@ -62,9 +58,6 @@ const envConfig = {
         gmailId: requiredEnvVars.gmail_id,
         gmailAppPassword: requiredEnvVars.gmail_app_password
     },
-    payment: {
-        stripeClientSecret: requiredEnvVars.stripe_client_secret
-    },
     admin: {
         email: requiredEnvVars.admin_email,
         password: requiredEnvVars.admin_pass,
@@ -72,11 +65,6 @@ const envConfig = {
         firstName: requiredEnvVars.admin_first_name,
         lastName: requiredEnvVars.admin_last_name,
         username: requiredEnvVars.admin_username
-    },
-    cloudinary: {
-        cloudName: requiredEnvVars.cloudinary_cloud_name,
-        apiKey: requiredEnvVars.cloudinary_api_key,
-        apiSecret: requiredEnvVars.cloudinary_api_secret
     }
 }
 
