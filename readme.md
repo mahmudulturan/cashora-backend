@@ -1,19 +1,29 @@
-# MERN Backend Boilerplate
+# Cashora - MFS (Mobile Financial Service) Backend
 
-A robust and scalable backend boilerplate built with TypeScript, Express.js, and MongoDB. This project provides a solid foundation for building production-ready REST APIs with modern best practices.
+A secure and scalable Mobile Financial Service backend built with TypeScript, Express.js and MongoDB. This project implements financial transactions, user management, and agent operations with proper security measures.
 
-## 🚀 Features
+## 🚀 Key Features
 
-- **TypeScript Support**: Full TypeScript implementation for better type safety and developer experience
-- **Authentication & Authorization**: JWT-based auth system with cookie support
-- **Rate Limiting**: Built-in API rate limiting protection
-- **Email Service**: Preconfigured Nodemailer setup for email handling
-- **API Documentation**: Swagger/OpenAPI integration for API documentation
-- **Error Handling**: Centralized error handling with custom error classes
-- **Validation**: Request validation using Zod
-- **Logging**: Winston logger implementation for better debugging
-- **View Engine**: Pug templating engine for server-side rendering
-- **Database**: MongoDB with Mongoose ODM
+- **Multi-Role Authentication**: Separate authentication for Users, Agents, and Admin
+- **Financial Operations**: 
+  - Send Money (User to User)
+  - Cash In (Agent to User)
+  - Cash Out (User to Agent)
+  - Balance Management
+- **Security Features**:
+  - JWT-based authentication
+  - PIN encryption
+  - Single device login
+  - Transaction verification
+- **Admin Controls**:
+  - User/Agent management
+  - Transaction monitoring
+  - Agent approval system
+  - System balance monitoring
+- **Agent Operations**:
+  - Balance recharge requests
+  - Withdrawal management
+  - User cash-in/cash-out handling
 
 ## 🛠️ Tech Stack
 
@@ -35,26 +45,14 @@ Before you begin, ensure you have the following installed:
 - npm (v8.x or higher)
 - MongoDB (v6.x or higher)
 
-### System Requirements
-
-- **Node.js**: Download and install from [Node.js official website](https://nodejs.org/)
-- **MongoDB**: 
-  - Install locally from [MongoDB official website](https://www.mongodb.com/try/download/community)
-  - Or use MongoDB Atlas cloud service
-- **TypeScript**: Install globally using `npm install -g typescript`
-
-### Development Tools (Recommended)
-
-- VS Code or any TypeScript-supported IDE
-- MongoDB Compass for database management
-- Postman or Insomnia for API testing
 
 ## 📦 Installation
 
 1. Clone the repository:
+
 ```bash
-git clone https://github.com/mahmudulturan/mern-backend-boilerplate.git
-cd mern-backend-boilerplate
+git clone https://github.com/mahmudulturan/cashora-backend.git
+cd cashora-backend
 ```
 
 2. Install dependencies:
@@ -102,14 +100,70 @@ src/
 │ └── views/ # Pug templates
 ```
 
-## 🛡️ Security Features
+## 🔐 API Endpoints
 
-- CORS configuration
+### 1. Authentication
+- `POST /auth/register` - User & agent registration
+- `POST /auth/login` - Login with mobile/email & PIN
+- `POST /auth/logout` - Logout (invalidate token)
+- `POST /auth/refresh-token` - Refresh JWT token
+- `POST /auth/reset-pin` - Reset PIN
+
+### 2. User
+- `GET /users/me` - Get logged-in user details
+- `GET /users/:id` - Get specific user details (admin only)
+- `PATCH /users/update-profile` - Update user profile
+- `PATCH /users/update-pin` - Change PIN
+- `PATCH /users/block/:id` - Block/unblock a user (admin only)
+- `GET /users/search?phone=xxxxx` - Search user by phone (admin only)
+
+### 3. Agent
+- `POST /agents/register` - Register an agent (requires admin approval)
+- `GET /agents` - List pending agent approvals (admin only)
+- `PATCH /agents/approve/:id` - Approve/reject agent (admin only)
+- `PATCH /agents/block/:id` - Block/unblock agent (admin only)
+- `GET /agents/:id` - Get agent details (admin & self)
+
+### 4. Transaction
+- `POST /transactions/send-money` - Send money to another user
+- `POST /transactions/cash-in` - Deposit money via an agent
+- `POST /transactions/cash-out` - Withdraw money via an agent
+- `GET /transactions/history` - Get logged-in user/agent transaction history
+- `GET /transactions/admin-history` - Get all transactions (admin only)
+- `GET /transactions/:id` - Get specific transaction details (admin only)
+
+### 5. Balance
+- `GET /balance` - Get current balance (user/agent)
+- `GET /balance/system` - Get total system balance (admin only)
+
+### 6. Admin
+- `GET /admin/users` - Get all users (admin only)
+- `GET /admin/agents` - Get all agents (admin only)
+- `PATCH /admin/recharge-agent/:id` - Approve agent balance recharge request
+- `PATCH /admin/withdraw-request/:id` - Approve/deny agent withdrawal request
+
+### 7. Notification
+- `GET /notifications` - Get user notifications
+- `POST /notifications/send` - Send notification (internal use)
+
+## 💰 Transaction Fees
+
+- Send Money: 5 taka (for transactions over 100 taka)
+- Cash Out: 1.5% of transaction amount
+  - Agent receives 1%
+  - Admin receives 0.5%
+- Cash In: No fee
+- Admin receives 5 taka for all operations
+
+## 🛡️ Security Features
+- Encrypted PIN storage
 - Rate limiting
-- JWT authentication
-- Request validation
-- Error handling
 - Cookie security
+- JWT token-based authentication
+- Single device login enforcement
+- Transaction verification
+- Role-based access control
+- CORS configuration
 
 ## 📝 API Documentation
 
@@ -123,15 +177,7 @@ Access the API documentation at `/api-docs` when running the server.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
 ## 👨‍💻 Author
 
 Mahmudul Hasan
 ---
-
-Feel free to star ⭐ this repository if you find it helpful!
-
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
