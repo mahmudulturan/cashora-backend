@@ -44,7 +44,7 @@ const registerUserIntoDB = async (payload: IUser, deviceInfo: string) => {
     // generate refresh token
     const refreshToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role, sessionToken }, envConfig.security.refreshTokenSecret as string, '60d');
 
-    const userWithoutPassword = await User.findById(newUser._id);
+    const userWithoutPin = await User.findById(newUser._id);
 
     await sendEmail({
         to: payload.email,
@@ -55,7 +55,7 @@ const registerUserIntoDB = async (payload: IUser, deviceInfo: string) => {
             role: newUser.role
         }
     })
-    return { user: userWithoutPassword, accessToken, refreshToken };
+    return { user: userWithoutPin, accessToken, refreshToken };
 }
 
 
@@ -125,8 +125,8 @@ const loginUserFromDB = async (payload: { emailOrPhone: string; pin: string; }, 
 }
 
 
-// change password service
-const changePasswordAtDB = async (userId: string, payload: { oldPassword: string, newPassword: string }) => {
+// change pin service
+const changePinAtDB = async (userId: string, payload: { oldPin: string, newPin: string }) => {
     const user = await User.findById(userId).select('+pin');
 
     // if user not found throw error
@@ -135,22 +135,22 @@ const changePasswordAtDB = async (userId: string, payload: { oldPassword: string
     }
 
     // compare with the hashed pin
-    const isPinMatch = await bcrypt.compare(payload.oldPassword, user.pin);
+    const isPinMatch = await bcrypt.compare(payload.oldPin, user.pin);
 
     // if pin not match throw error
     if (!isPinMatch) {
         throw new AppError(httpStatus.UNAUTHORIZED, "Old pin is incorrect");
     }
 
-    user.pin = payload.newPassword;
+    user.pin = payload.newPin;
     await user.save();
 
     return;
 }
 
 
-// send reset password email service
-const sendResetPasswordEmail = async (email: string) => {
+// send reset pin email service
+const sendResetPinEmail = async (email: string) => {
     const user = await User.findOne({ email, isDeleted: false });
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "User not found");
@@ -159,26 +159,26 @@ const sendResetPasswordEmail = async (email: string) => {
 
     const hashedOtpCode = await bcrypt.hash(otpCode, Number(envConfig.security.saltRounds));
 
-    // set forgot password otp
+    // set forgot pin otp
     await OTP.create({
         userId: user._id,
         email: user.email,
         otp: hashedOtpCode,
-        type: 'forgot-password'
+        type: 'forgot-pin'
     });
 
-    const resetToken = jwt.sign({ userId: user._id, email: user.email }, envConfig.security.resetPasswordTokenSecret as string, { expiresIn: '5m' });
+    const resetToken = jwt.sign({ userId: user._id, email: user.email }, envConfig.security.resetPinTokenSecret as string, { expiresIn: '5m' });
 
     await sendEmail({
         to: email,
-        subject: 'Reset Your Password',
-        template: 'resetPassword',
+        subject: 'Reset Your Pin',
+        template: 'resetPin',
         context: {
             firstName: user.name.firstName,
             resetToken,
             otpCode,
             currentYear: new Date().getFullYear(),
-            resetUrl: `${envConfig.app.nodeEnv === 'production' ? envConfig.client.liveUrl : envConfig.client.localUrl}/forgot-password?step=change-password&token=${resetToken}`
+            resetUrl: `${envConfig.app.nodeEnv === 'production' ? envConfig.client.liveUrl : envConfig.client.localUrl}/forgot-pin?step=change-pin&token=${resetToken}`
         }
     });
 
@@ -186,9 +186,9 @@ const sendResetPasswordEmail = async (email: string) => {
 }
 
 
-// verify reset password otp service
-const verifyResetPasswordOtp = async (payload: { otp: string, email: string }) => {
-    const hashedOtpCode = await OTP.findOne({ email: payload.email, type: 'forgot-password' });
+// verify reset pin otp service
+const verifyResetPinOtp = async (payload: { otp: string, email: string }) => {
+    const hashedOtpCode = await OTP.findOne({ email: payload.email, type: 'forgot-pin' });
 
     if (!hashedOtpCode) {
         throw new AppError(httpStatus.UNAUTHORIZED, "Invalid otp code");
@@ -207,20 +207,20 @@ const verifyResetPasswordOtp = async (payload: { otp: string, email: string }) =
         throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token");
     }
 
-    const resetToken = jwt.sign({ userId: isUserExist._id, email: isUserExist.email }, envConfig.security.resetPasswordTokenSecret as string, { expiresIn: '5m' });
+    const resetToken = jwt.sign({ userId: isUserExist._id, email: isUserExist.email }, envConfig.security.resetPinTokenSecret as string, { expiresIn: '5m' });
 
-    await OTP.deleteOne({ userId: isUserExist._id, type: 'forgot-password' });
+    await OTP.deleteOne({ userId: isUserExist._id, type: 'forgot-pin' });
 
     return { resetToken };
 }
 
 
-// reset password service
-const resetPassword = async (token: string, payload: { newPin: string }) => {
+// reset pin service
+const resetPin = async (token: string, payload: { newPin: string }) => {
     let id: string;
     let userEmail: string;
     try {
-        const { userId, email } = jwt.verify(token, envConfig.security.resetPasswordTokenSecret as string) as JwtPayload;
+        const { userId, email } = jwt.verify(token, envConfig.security.resetPinTokenSecret as string) as JwtPayload;
         id = userId;
         userEmail = email;
     } catch (error) {
@@ -269,10 +269,10 @@ const logoutUserFromDB = async (userId: string) => {
 export const authServices = {
     registerUserIntoDB,
     loginUserFromDB,
-    changePasswordAtDB,
-    sendResetPasswordEmail,
-    resetPassword,
+    changePinAtDB,
+    sendResetPinEmail,
+    resetPin,
     refreshToken,
-    verifyResetPasswordOtp,
+    verifyResetPinOtp,
     logoutUserFromDB
 }

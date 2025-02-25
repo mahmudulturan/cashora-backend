@@ -44,49 +44,49 @@ const loginUser = catchAsync(async (req, res) => {
 })
 
 
-// change password controller
-const changePassword = catchAsync(async (req, res) => {
-    await authServices.changePasswordAtDB(req.user._id, req.body);
+// change pin controller
+const changePin = catchAsync(async (req, res) => {
+    await authServices.changePinAtDB(req.user._id, req.body);
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,
-        message: 'Password changed successfully'
+        message: 'Pin changed successfully'
     })
 })
 
 
-// send reset password email controller
-const sendResetPasswordEmail = catchAsync(async (req, res) => {
-    await authServices.sendResetPasswordEmail(req.params.email);
+// send reset pin email controller
+const sendResetPinEmail = catchAsync(async (req, res) => {
+    await authServices.sendResetPinEmail(req.params.email);
 
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,
-        message: 'Reset password email sent successfully'
+        message: 'Reset pin email sent successfully'
     })
 })
 
 
-// verify reset password otp controller
-const verifyResetPasswordOtp = catchAsync(async (req, res) => {
-    const verifyToken = await authServices.verifyResetPasswordOtp(req.body);
+// verify reset pin otp controller
+const verifyResetPinOtp = catchAsync(async (req, res) => {
+    const verifyToken = await authServices.verifyResetPinOtp(req.body);
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,
-        message: 'Reset password otp verified successfully',
+        message: 'Reset pin otp verified successfully',
         data: verifyToken
     })
 })
 
 
-// reset password controller
-const resetPassword = catchAsync(async (req, res) => {
-    await authServices.resetPassword(req.params.token, req.body);
+// reset pin controller
+const resetPin = catchAsync(async (req, res) => {
+    await authServices.resetPin(req.params.token, req.body);
 
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,
-        message: 'Password reset successfully'
+        message: 'Pin reset successfully'
     })
 })
 
@@ -117,10 +117,10 @@ const logout = catchAsync(async (req, res) => {
 export const authController = {
     registerUser,
     loginUser,
-    changePassword,
-    sendResetPasswordEmail,
-    verifyResetPasswordOtp,
-    resetPassword,
+    changePin,
+    sendResetPinEmail,
+    verifyResetPinOtp,
+    resetPin,
     refreshToken,
     logout
 }

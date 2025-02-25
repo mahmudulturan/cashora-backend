@@ -13,7 +13,7 @@ const requiredEnvVars = {
     salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
     access_token_secret: process.env.ACCESS_TOKEN_SECRET,
     refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
-    reset_password_token_secret: process.env.RESET_PASSWORD_TOKEN_SECRET,
+    reset_pin_token_secret: process.env.RESET_PIN_TOKEN_SECRET,
     email_verification_token_secret: process.env.EMAIL_VERIFICATION_TOKEN_SECRET,
     gmail_id: process.env.GMAIL_USER,
     gmail_app_password: process.env.GMAIL_APP_PASSWORD,
@@ -51,7 +51,7 @@ const envConfig = {
         saltRounds: requiredEnvVars.salt_rounds,
         accessTokenSecret: requiredEnvVars.access_token_secret,
         refreshTokenSecret: requiredEnvVars.refresh_token_secret,
-        resetPasswordTokenSecret: requiredEnvVars.reset_password_token_secret,
+        resetPinTokenSecret: requiredEnvVars.reset_pin_token_secret,
         emailVerificationTokenSecret: requiredEnvVars.email_verification_token_secret
     },
     email: {

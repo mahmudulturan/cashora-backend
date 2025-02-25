@@ -65,16 +65,16 @@ const loginUserValidationSchema = z.object({
     }),
 });
 
-// change password validation schema
-const changePasswordValidationSchema = z.object({
+// change pin validation schema
+const changePinValidationSchema = z.object({
     body: z.object({
         oldPin: pinValidationSchema,
         newPin: pinValidationSchema
     })
 })
 
-// reset password validation schema
-const resetPasswordValidationSchema = z.object({
+// reset pin validation schema
+const resetPinValidationSchema = z.object({
     body: z.object({
         newPin: pinValidationSchema
     })
@@ -98,7 +98,7 @@ const verifyOtpValidationSchema = z.object({
 export const authValidation = {
     registerUserValidationSchema,
     loginUserValidationSchema,
-    changePasswordValidationSchema,
-    resetPasswordValidationSchema,
+    changePinValidationSchema,
+    resetPinValidationSchema,
     verifyOtpValidationSchema
 }   

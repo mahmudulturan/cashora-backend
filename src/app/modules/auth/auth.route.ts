@@ -21,27 +21,27 @@ router.post('/login',
     authController.loginUser);
 
 
-// change password route
-router.patch('/password/change',
-    verifyUser('user', 'admin'),
-    requestValidation(authValidation.changePasswordValidationSchema),
-    authController.changePassword);
+// change pin route
+router.patch('/pin/change',
+    verifyUser('user', 'agent', 'admin'),
+    requestValidation(authValidation.changePinValidationSchema),
+    authController.changePin);
 
-// send reset password email route
-router.post('/password/reset-email/:email',
-    authRateLimiters.resetPasswordEmailLimit,
-    authController.sendResetPasswordEmail);
+// send reset pin email route
+router.post('/pin/reset-email/:email',
+    authRateLimiters.resetPinEmailLimit,
+    authController.sendResetPinEmail);
 
 
-router.post('/password/reset/verify-otp',
+router.post('/pin/reset/verify-otp',
     requestValidation(authValidation.verifyOtpValidationSchema),
-    authController.verifyResetPasswordOtp)
+    authController.verifyResetPinOtp)
 
 
-// reset password route
-router.patch('/password/reset/:token',
-    requestValidation(authValidation.resetPasswordValidationSchema),
-    authController.resetPassword);
+// reset pin route
+router.patch('/pin/reset/:token',
+    requestValidation(authValidation.resetPinValidationSchema),
+    authController.resetPin);
 
 
 // refresh token route

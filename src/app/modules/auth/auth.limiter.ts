@@ -21,11 +21,11 @@ const verificationEmailLimit = rateLimiter({
     message: 'Too many verification email requests, please try again later'
 });
 
-// reset password email rate limiter
-const resetPasswordEmailLimit = rateLimiter({
+// reset pin email rate limiter
+const resetPinEmailLimit = rateLimiter({
     windowMs: 15,
     max: 5,
-    message: 'Too many reset password requests, please try again later'
+    message: 'Too many reset pin requests, please try again later'
 });
 
 
@@ -33,5 +33,5 @@ export const authRateLimiters = {
     loginRateLimit,
     userRegisterLimit,
     verificationEmailLimit,
-    resetPasswordEmailLimit
+    resetPinEmailLimit
 }
