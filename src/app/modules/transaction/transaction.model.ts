@@ -32,12 +32,15 @@ const transactionSchema = new Schema<ITransaction>({
         min: 50
     },
     note: {
-        type: String,
-        required: true
+        type: String
     },
     fees: {
         type: transactionFeesSchema,
-        required: true
+        default: {
+            transactionFee: 0,
+            adminFee: 0,
+            agentCommission: 0
+        }
     }
 }, {
     timestamps: true

@@ -68,7 +68,7 @@ const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<IT
 
         const [agent, user] = await Promise.all([
             User.findById(agentId),
-            User.findById(payload.sender)
+            User.findById(payload.receiver)
         ]);
 
         if (!agent || !user) {
@@ -79,23 +79,23 @@ const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<IT
             throw new AppError(httpStatus.BAD_REQUEST, 'Insufficient balance');
         }
 
-        const fees = calculateTransactionFees(payload.amount, 'cash_in');
-
         const transaction = await Transaction.create([{
-            ...payload,
             type: 'cash_in',
-            fees
+            sender: agentId,
+            receiver: payload.receiver,
+            amount: payload.amount,
+            note: payload.note
         }], { session });
 
         await Promise.all([
             User.findByIdAndUpdate(
                 agentId,
-                { $inc: { balance: -(payload.amount) } },
+                { $inc: { balance: -payload.amount } },
                 { session }
             ),
             User.findByIdAndUpdate(
-                payload.sender,
-                { $inc: { balance: payload.amount - fees.transactionFee } },
+                payload.receiver,
+                { $inc: { balance: payload.amount } },
                 { session }
             )
         ]);
