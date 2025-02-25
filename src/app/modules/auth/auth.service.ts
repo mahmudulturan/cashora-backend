@@ -13,7 +13,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 // create user service
 const registerUserIntoDB = async (payload: IUser, deviceInfo: string) => {
-    const isUserExist = await User.findOne({ $or: [{ email: payload.email }, { phone: payload.phone }, { nid: payload.nid }] });
+    let isUserExist = await User.findOne({ $or: [{ email: payload.email }, { phone: payload.phone }, { nid: payload.nid }] });
+
+    if (isUserExist && isUserExist.isDeleted) {
+        await User.findByIdAndDelete(isUserExist._id);
+        isUserExist = null;
+    }
 
     // check if user already exist with email or phone
     if (isUserExist?.email === payload.email) {
