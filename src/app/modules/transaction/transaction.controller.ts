@@ -24,11 +24,21 @@ const cashIn = catchAsync(async (req, res) => {
     });
 });
 
+const cashOut = catchAsync(async (req, res) => {
+    const transaction = await transactionService.cashOut(req.user?.userId, req.body);
+    sendResponse(res, {
+        success: true,
+        status: httpStatus.OK,
+        message: 'Cash out successful',
+        data: transaction
+    });
+});
 
 
 export const transactionController = {
     sendMoney,
-    cashIn
+    cashIn,
+    cashOut
 }
 
 

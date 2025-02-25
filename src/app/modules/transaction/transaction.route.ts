@@ -17,4 +17,9 @@ router.post('/cash-in',
     requestValidation(transactionValidation.transferAmountValidationSchema),
     transactionController.cashIn);
 
+router.post('/cash-out',
+    verifyUser("user"),
+    requestValidation(transactionValidation.transferAmountValidationSchema),
+    transactionController.cashOut);
+
 export default router;

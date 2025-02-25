@@ -1,11 +1,11 @@
 import httpStatus from "../../constants/httpStatus";
 import AppError from "../../errors/AppError";
 import User from "../user/user.model";
-import { ITransaction, ITransactionPayload } from "./transaction.interface";
+import { ITransactionPayload } from "./transaction.interface";
 import Transaction from "./transaction.model";
 import { calculateTransactionFees } from "./transaction.utils";
 
-const sendMoney = async (senderId: string, payload: ITransactionPayload): Promise<ITransaction> => {
+const sendMoney = async (senderId: string, payload: ITransactionPayload) => {
     const session = await Transaction.startSession();
 
     try {
@@ -63,7 +63,7 @@ const sendMoney = async (senderId: string, payload: ITransactionPayload): Promis
 };
 
 
-const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<ITransaction> => {
+const cashIn = async (agentId: string, payload: ITransactionPayload) => {
     const session = await Transaction.startSession();
 
     try {
@@ -114,7 +114,63 @@ const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<IT
 };
 
 
+const cashOut = async (userId: string, payload: ITransactionPayload) => {
+    const session = await Transaction.startSession();
+
+    try {
+        session.startTransaction();
+
+        const [agent, user] = await Promise.all([
+            User.findOne({ $and: [{ phone: payload.receiver }, { role: 'agent' }] }),
+            User.findById(userId)
+        ]);
+
+        if (!agent || !user) {
+            throw new AppError(httpStatus.NOT_FOUND, `${!agent ? 'Agent' : 'User'} not found`);
+        }
+
+        if (user.balance < payload.amount) {
+            throw new AppError(httpStatus.BAD_REQUEST, 'Insufficient balance');
+        }
+
+        const fees = calculateTransactionFees(payload.amount, 'cash_out');
+
+        const transaction = await Transaction.create([{
+            sender: userId,
+            receiver: agent._id,
+            type: 'cash_out',
+            amount: payload.amount,
+            note: payload.note,
+            fees
+        }], { session });
+
+        await Promise.all([
+            User.findByIdAndUpdate(
+                userId,
+                { $inc: { balance: -(payload.amount + fees.transactionFee) } },
+                { session }
+            ),
+            User.findByIdAndUpdate(
+                agent._id,
+                { $inc: { balance: payload.amount, income: fees.agentCommission } },
+                { session }
+            )
+        ]);
+
+        await session.commitTransaction();
+        return transaction[0];
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
+};
+
+
+
 export const transactionService = {
     sendMoney,
-    cashIn
+    cashIn,
+    cashOut
 }
