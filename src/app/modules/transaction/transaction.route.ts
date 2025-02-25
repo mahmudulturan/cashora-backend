@@ -27,4 +27,9 @@ router.get('/history',
     transactionController.getHistory);
 
 
+router.get('/all-history',
+    verifyUser("admin"),
+    transactionController.getAllHistory);
+
+
 export default router;

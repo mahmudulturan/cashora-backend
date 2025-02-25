@@ -188,9 +188,34 @@ const getHistory = async (userId: string, query: Record<string, any>) => {
     };
 };
 
+
+const getAllHistory = async (query: Record<string, any>) => {
+    const { populate, exceptFields } = getPopulateFields(query);
+
+    const transactionsQuery = new QueryBuilder(
+        Transaction.find().populate(populate),
+        query
+    )
+        .search(['sender', 'receiver'])
+        .paginate()
+        .filter(exceptFields)
+        .sort()
+        .fields();
+
+    const result = await transactionsQuery.modelQuery;
+    const meta = await transactionsQuery.countTotal();
+
+    return {
+        meta,
+        result
+    };
+};
+
+
 export const transactionService = {
     sendMoney,
     cashIn,
     cashOut,
-    getHistory
+    getHistory,
+    getAllHistory
 }
