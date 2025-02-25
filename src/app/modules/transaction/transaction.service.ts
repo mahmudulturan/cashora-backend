@@ -5,7 +5,7 @@ import { ITransaction, ITransactionPayload } from "./transaction.interface";
 import Transaction from "./transaction.model";
 import { calculateTransactionFees } from "./transaction.utils";
 
-const sendMoneyFromDB = async (payload: ITransactionPayload): Promise<ITransaction> => {
+const sendMoney = async (payload: ITransactionPayload): Promise<ITransaction> => {
     const session = await Transaction.startSession();
 
     try {
@@ -60,6 +60,58 @@ const sendMoneyFromDB = async (payload: ITransactionPayload): Promise<ITransacti
 };
 
 
+const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<ITransaction> => {
+    const session = await Transaction.startSession();
+
+    try {
+        session.startTransaction();
+
+        const [agent, user] = await Promise.all([
+            User.findById(agentId),
+            User.findById(payload.sender)
+        ]);
+
+        if (!agent || !user) {
+            throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+        }
+
+        if (agent.balance < payload.amount) {
+            throw new AppError(httpStatus.BAD_REQUEST, 'Insufficient balance');
+        }
+
+        const fees = calculateTransactionFees(payload.amount, 'cash_in');
+
+        const transaction = await Transaction.create([{
+            ...payload,
+            type: 'cash_in',
+            fees
+        }], { session });
+
+        await Promise.all([
+            User.findByIdAndUpdate(
+                agentId,
+                { $inc: { balance: -(payload.amount) } },
+                { session }
+            ),
+            User.findByIdAndUpdate(
+                payload.sender,
+                { $inc: { balance: payload.amount - fees.transactionFee } },
+                { session }
+            )
+        ]);
+
+        await session.commitTransaction();
+        return transaction[0];
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
+};
+
+
 export const transactionService = {
-    sendMoneyFromDB
+    sendMoney,
+    cashIn
 }

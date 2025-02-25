@@ -9,8 +9,16 @@ const sendMoneyValidationSchema = z.object({
     })
 }); 
 
+const cashInValidationSchema = z.object({
+    body: z.object({
+        receiver: z.string(),
+        amount: z.number(),
+    })
+}); 
+
 
 export const transactionValidation = {
-    sendMoneyValidationSchema
+    sendMoneyValidationSchema,
+    cashInValidationSchema
 }
 
