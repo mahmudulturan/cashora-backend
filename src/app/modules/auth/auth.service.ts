@@ -160,12 +160,11 @@ const sendResetPinEmail = async (email: string) => {
     const hashedOtpCode = await bcrypt.hash(otpCode, Number(envConfig.security.saltRounds));
 
     // set forgot pin otp
-    await OTP.create({
-        userId: user._id,
-        email: user.email,
-        otp: hashedOtpCode,
-        type: 'forgot-pin'
-    });
+    await OTP.findOneAndUpdate(
+        { userId: user._id, email: user.email },
+        { otp: hashedOtpCode },
+        { upsert: true, new: true }
+    );
 
     const resetToken = jwt.sign({ userId: user._id, email: user.email }, envConfig.security.resetPinTokenSecret as string, { expiresIn: '5m' });
 
@@ -188,7 +187,7 @@ const sendResetPinEmail = async (email: string) => {
 
 // verify reset pin otp service
 const verifyResetPinOtp = async (payload: { otp: string, email: string }) => {
-    const hashedOtpCode = await OTP.findOne({ email: payload.email, type: 'forgot-pin' });
+    const hashedOtpCode = await OTP.findOne({ email: payload.email });
 
     if (!hashedOtpCode) {
         throw new AppError(httpStatus.UNAUTHORIZED, "Invalid otp code");
@@ -209,7 +208,7 @@ const verifyResetPinOtp = async (payload: { otp: string, email: string }) => {
 
     const resetToken = jwt.sign({ userId: isUserExist._id, email: isUserExist.email }, envConfig.security.resetPinTokenSecret as string, { expiresIn: '5m' });
 
-    await OTP.deleteOne({ userId: isUserExist._id, type: 'forgot-pin' });
+    await OTP.findByIdAndDelete(hashedOtpCode._id);
 
     return { resetToken };
 }

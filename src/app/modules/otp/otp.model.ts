@@ -15,16 +15,6 @@ const otpSchema = new Schema<IOTP>({
         type: String,
         required: true
     },
-    type: {
-        type: String,
-        enum: ['verification', 'forgot-password'],
-        required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        expires: 3600
-    },
     expiresAt: {
         type: Date,
         required: true,
@@ -32,7 +22,7 @@ const otpSchema = new Schema<IOTP>({
             return new Date(Date.now() + 10 * 60 * 1000);
         }
     }
-});
+}, { timestamps: true });
 
 // index for faster queries
 otpSchema.index({ userId: 1, type: 1 });
