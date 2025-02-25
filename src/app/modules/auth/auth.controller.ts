@@ -7,7 +7,9 @@ import { authServices } from "./auth.service";
 
 // create user controller
 const registerUser = catchAsync(async (req, res) => {
-    const { user, accessToken, refreshToken } = await authServices.registerUserIntoDB(req.body);
+    const deviceInfo = `${req.headers['user-agent']} - ${req.ip}`;
+
+    const { user, accessToken, refreshToken } = await authServices.registerUserIntoDB(req.body, deviceInfo);
 
     // send response with refresh and access token
     res.status(httpStatus.CREATED)

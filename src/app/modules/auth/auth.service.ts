@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 // create user service
-const registerUserIntoDB = async (payload: IUser) => {
+const registerUserIntoDB = async (payload: IUser, deviceInfo: string) => {
     const isUserExist = await User.findOne({ $or: [{ email: payload.email }, { phone: payload.phone }, { nid: payload.nid }] });
 
     // check if user already exist with email or phone
@@ -24,14 +24,25 @@ const registerUserIntoDB = async (payload: IUser) => {
         throw new AppError(httpStatus.CONFLICT, 'A user already registered with this NID.');
     }
 
+    const sessionToken = uuidv4();
+
     // create user
-    const newUser = await User.create(payload);
+    const newUser = await User.create({
+        ...payload,
+        isLoggedIn: true,
+        activeSession: {
+            token: sessionToken,
+            lastLogin: new Date(),
+            deviceInfo,
+            lastDevice: null
+        }
+    });
 
     // generate access token
-    const accessToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role }, envConfig.security.accessTokenSecret as string, '7d');
+    const accessToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role, sessionToken }, envConfig.security.accessTokenSecret as string, '7d');
 
     // generate refresh token
-    const refreshToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role }, envConfig.security.refreshTokenSecret as string, '60d');
+    const refreshToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role, sessionToken }, envConfig.security.refreshTokenSecret as string, '60d');
 
     const userWithoutPassword = await User.findById(newUser._id);
 
