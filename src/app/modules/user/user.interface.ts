@@ -6,6 +6,14 @@ export interface IName {
 }
 
 
+export interface IActiveSession {
+    token: string;
+    lastLogin: Date;
+    deviceInfo: string;
+    lastDevice: string;
+}
+
+
 export interface IUser {
     name: IName;
     email: string;
@@ -16,12 +24,7 @@ export interface IUser {
     balance: number;
     income: number;
     status: 'pending' | 'active' | 'blocked';
-    activeSession: {
-        token: string;
-        lastLogin: Date;
-        deviceInfo: string;
-        lastDevice: string;
-    };
+    activeSession: IActiveSession;
     isLoggedIn: boolean;
     isDeleted: boolean;
 }       

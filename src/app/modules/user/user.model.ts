@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IName, IUser } from "./user.interface";
+import { IActiveSession, IName, IUser } from "./user.interface";
 import bcrypt from 'bcrypt'
 import envConfig from "../../configs/env.config";
 
@@ -16,6 +16,29 @@ const nameSchema = new Schema<IName>({
     _id: false,
     virtuals: true
 })
+
+
+const activeSessionSchema = new Schema<IActiveSession>({
+    token: {
+        type: String,
+        default: null
+    },
+    lastLogin: {
+        type: Date,
+        default: null
+    },
+    deviceInfo: {
+        type: String,
+        default: null
+    },
+    lastDevice: {
+        type: String,
+        default: null
+    }
+}, {
+    _id: false
+})
+
 
 
 const userSchema = new Schema<IUser>({
@@ -74,18 +97,8 @@ const userSchema = new Schema<IUser>({
         }
     },
     activeSession: {
-        token: {
-            type: String,
-            default: null
-        },
-        lastLogin: {
-            type: Date,
-            default: null
-        },
-        deviceInfo: {
-            type: String,
-            default: null
-        }
+        type: activeSessionSchema,
+        default: null
     },
     isLoggedIn: {
         type: Boolean,
