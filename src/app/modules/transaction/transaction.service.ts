@@ -1,5 +1,7 @@
+import QueryBuilder from "../../builder/QueryBuilder";
 import httpStatus from "../../constants/httpStatus";
 import AppError from "../../errors/AppError";
+import { getPopulateFields } from "../../utils/getPopulateFields";
 import User from "../user/user.model";
 import { ITransactionPayload } from "./transaction.interface";
 import Transaction from "./transaction.model";
@@ -168,9 +170,27 @@ const cashOut = async (userId: string, payload: ITransactionPayload) => {
 };
 
 
+const getHistory = async (userId: string, query: Record<string, any>) => {
+    const { populate, exceptFields } = getPopulateFields(query);
+
+    const transactionsQuery = new QueryBuilder(
+        Transaction.find({ $or: [{ sender: userId }, { receiver: userId }] }).populate(populate),
+        query
+    )
+        .search(['sender', 'receiver']).paginate().filter(exceptFields).sort().fields();
+
+    const result = await transactionsQuery.modelQuery;
+    const meta = await transactionsQuery.countTotal();
+
+    return {
+        meta,
+        result
+    };
+};
 
 export const transactionService = {
     sendMoney,
     cashIn,
-    cashOut
+    cashOut,
+    getHistory
 }
