@@ -56,7 +56,7 @@ const loginUserValidationSchema = z.object({
             required_error: 'Email or phone number is required',
         }).refine(value => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const mobileRegex = /^[0-9]{10,10}$/;
+            const mobileRegex = /^[0-9]{11,11}$/;
             return emailRegex.test(value) || mobileRegex.test(value);
         }, {
             message: 'Must be a valid email or phone number',
