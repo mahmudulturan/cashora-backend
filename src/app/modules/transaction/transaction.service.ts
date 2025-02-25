@@ -18,7 +18,7 @@ const sendMoney = async (senderId: string, payload: ITransactionPayload): Promis
         ]);
 
         if (!sender || !receiver) {
-            throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+            throw new AppError(httpStatus.NOT_FOUND, `${!sender ? 'Sender' : 'Receiver'} not found`);
         }
 
         // Check if sender has sufficient balance
@@ -75,7 +75,7 @@ const cashIn = async (agentId: string, payload: ITransactionPayload): Promise<IT
         ]);
 
         if (!agent || !user) {
-            throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+            throw new AppError(httpStatus.NOT_FOUND, `${!agent ? 'Agent' : 'Receiver'} not found`);
         }
 
         if (agent.balance < payload.amount) {
