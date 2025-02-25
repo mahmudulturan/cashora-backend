@@ -250,6 +250,11 @@ const refreshToken = async (token: string) => {
 }
 
 
+// logout user service
+const logoutUserFromDB = async (userId: string) => {
+    await User.findByIdAndUpdate(userId, { isLoggedIn: false, activeSession: { token: null, lastLogin: null, deviceInfo: null, lastDevice: null } });
+}
+
 export const authServices = {
     registerUserIntoDB,
     loginUserFromDB,
@@ -257,5 +262,6 @@ export const authServices = {
     sendResetPasswordEmail,
     resetPassword,
     refreshToken,
-    verifyResetPasswordOtp
+    verifyResetPasswordOtp,
+    logoutUserFromDB
 }

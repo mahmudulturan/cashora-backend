@@ -105,6 +105,7 @@ const refreshToken = catchAsync(async (req, res) => {
 })
 
 const logout = catchAsync(async (req, res) => {
+    await authServices.logoutUserFromDB(req.user._id);
     res.clearCookie("access-token", logOutCookieOptions)
         .clearCookie("refresh-token", logOutCookieOptions)
         .send({ success: true, message: "User logged out successfully" });
