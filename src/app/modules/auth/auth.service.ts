@@ -3,7 +3,7 @@ import httpStatus from "../../constants/httpStatus";
 import AppError from "../../errors/AppError";
 import { IUser } from "../user/user.interface";
 import User from "../user/user.model";
-import { generateJwtToken, generateUsername, otpGenerator } from "./auth.utils";
+import { generateJwtToken, otpGenerator } from "./auth.utils";
 import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import sendEmail from "../../utils/sendEmail";
@@ -12,19 +12,19 @@ import OTP from "../otp/otp.model";
 
 // create user service
 const registerUserIntoDB = async (payload: IUser) => {
-    const isUserExist = await User.findOne({ email: payload.email });
+    const isUserExist = await User.findOne({ $or: [{ email: payload.email }, { phone: payload.phone }, { nid: payload.nid }] });
 
     // check if user already exist with email or phone
     if (isUserExist?.email === payload.email) {
         throw new AppError(httpStatus.CONFLICT, 'A user already registered with this email.');
     } else if (isUserExist?.phone === payload.phone) {
         throw new AppError(httpStatus.CONFLICT, 'A user already registered with this phone number.');
+    } else if (isUserExist?.nid === payload.nid) {
+        throw new AppError(httpStatus.CONFLICT, 'A user already registered with this NID.');
     }
 
-
     // create user
-    const newUser = await User.create({ ...payload });
-
+    const newUser = await User.create(payload);
 
     // generate access token
     const accessToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role }, envConfig.security.accessTokenSecret as string, '7d');
@@ -32,19 +32,7 @@ const registerUserIntoDB = async (payload: IUser) => {
     // generate refresh token
     const refreshToken = generateJwtToken({ userId: String(newUser._id), role: newUser.role }, envConfig.security.refreshTokenSecret as string, '60d');
 
-
     const userWithoutPassword = await User.findById(newUser._id);
-
-    const verificationCode = otpGenerator();
-
-    const hashedOtpCode = await bcrypt.hash(verificationCode, Number(envConfig.security.saltRounds));
-
-    await OTP.create({
-        userId: newUser._id,
-        email: newUser.email,
-        otp: hashedOtpCode,
-        type: 'verification'
-    });
 
     await sendEmail({
         to: payload.email,
@@ -52,7 +40,7 @@ const registerUserIntoDB = async (payload: IUser) => {
         template: 'welcome',
         context: {
             name: payload.name.firstName,
-            role: "user"
+            role: newUser.role
         }
     })
     return { user: userWithoutPassword, accessToken, refreshToken };
