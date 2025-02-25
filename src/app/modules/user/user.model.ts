@@ -26,12 +26,15 @@ const userSchema = new Schema<IUser>({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     phone: {
         type: String,
         required: true,
         minlength: 11,
+        maxlength: 11,
         unique: true
     },
     pin: {
@@ -44,8 +47,8 @@ const userSchema = new Schema<IUser>({
     nid: {
         type: String,
         required: true,
-        minlength: 13,
-        maxlength: 13,
+        minlength: 10,
+        maxlength: 10,
         unique: true
     },
     role: {
