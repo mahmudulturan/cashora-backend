@@ -34,37 +34,43 @@ const userSchema = new Schema<IUser>({
         minlength: 11,
         unique: true
     },
-    username: {
+    pin: {
         type: String,
         required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true,
+        minlength: 5,
+        maxlength: 5,
         select: false
     },
-    dateOfBirth: {
-        type: String
-    },
-    profileImg: {
+    nid: {
         type: String,
-    },
-    gender: {
-        type: String,
-        enum: ['male', 'female', 'other']
+        required: true,
+        minlength: 13,
+        maxlength: 13,
+        unique: true
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
+        enum: ['user', 'agent', 'admin'],
         default: 'user'
+    },
+    balance: {
+        type: Number,
+        default: function () {
+            return this.role === 'agent' ? 100000 : 40;
+        }
+    },
+    income: {
+        type: Number,
+        default: 0
     },
     status: {
         type: String,
-        enum: ['active', 'blocked'],
-        default: 'active'
+        enum: ['active', 'blocked', 'pending'],
+        default: function () {
+            return this.role === 'agent' ? 'pending' : 'active';
+        }
     },
-    isEmailVerified: {
+    isLoggedIn: {
         type: Boolean,
         default: false
     },
@@ -85,7 +91,7 @@ userSchema.pre("save", async function (next) {
     const user = this as IUser;
 
     // hash password
-    user.password = await bcrypt.hash(user.password, Number(envConfig.security.saltRounds));
+    user.pin = await bcrypt.hash(user.pin, Number(envConfig.security.saltRounds));
 
     next();
 })

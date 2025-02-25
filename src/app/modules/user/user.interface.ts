@@ -10,13 +10,12 @@ export interface IUser {
     name: IName;
     email: string;
     phone: string;
-    username: string;
-    password: string;
-    dateOfBirth?: string;
-    profileImg?: string;
-    gender?: 'male' | 'female' | 'other';
-    role: 'user' | 'admin';
-    status: 'active' | 'blocked';
-    isEmailVerified: boolean;
+    pin: string;
+    nid: string;
+    role: 'user' | 'agent' | 'admin';
+    balance: number;
+    income: number;
+    status: 'pending' | 'active' | 'blocked';
+    isLoggedIn: boolean;
     isDeleted: boolean;
-}
+}       
