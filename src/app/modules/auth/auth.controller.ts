@@ -19,13 +19,26 @@ const registerUser = catchAsync(async (req, res) => {
 
 // login user controller
 const loginUser = catchAsync(async (req, res) => {
-    const { user, accessToken, refreshToken } = await authServices.loginUserFromDB(req.body);
+    const deviceInfo = `${req.headers['user-agent']} - ${req.ip}`;
+    
+    const { 
+        user, 
+        accessToken, 
+        refreshToken, 
+        wasLoggedOutFromOtherDevice 
+    } = await authServices.loginUserFromDB(req.body, deviceInfo);
 
     // send response with refresh and access token
     res.status(httpStatus.OK)
         .cookie("access-token", accessToken, accessTokenCookieOptions)
         .cookie("refresh-token", refreshToken, refreshTokenCookieOptions)
-        .send({ success: true, message: "User logged in successful!", data: user });
+        .send({ 
+            success: true, 
+            message: wasLoggedOutFromOtherDevice 
+                ? "Logged in successfully. You were logged out from other devices."
+                : "User logged in successful!", 
+            data: user 
+        });
 })
 
 

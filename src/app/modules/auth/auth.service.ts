@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import sendEmail from "../../utils/sendEmail";
 import OTP from "../otp/otp.model";
+import { v4 as uuidv4 } from 'uuid';
 
 
 // create user service
@@ -48,9 +49,10 @@ const registerUserIntoDB = async (payload: IUser) => {
 
 
 // login user service
-const loginUserFromDB = async (payload: { email: string; pin: string; }) => {
-
-    const user = await User.findOne({ $and: [{ isDeleted: false, email: payload.email }] }).select('+pin');
+const loginUserFromDB = async (payload: { emailOrPhone: string; pin: string; }, deviceInfo: string) => {
+    const user = await User.findOne({
+        $and: [{ isDeleted: false, $or: [{ email: payload.emailOrPhone }, { phone: payload.emailOrPhone }] }]
+    }).select('+pin');
 
     // if user not found throw error
     if (!user) {
@@ -65,16 +67,50 @@ const loginUserFromDB = async (payload: { email: string; pin: string; }) => {
         throw new AppError(httpStatus.UNAUTHORIZED, "Incorrect pin");
     }
 
+    // Generate new session token
+    const sessionToken = uuidv4();
 
-    // generate access token
-    const accessToken = generateJwtToken({ userId: String(user._id), role: user.role }, envConfig.security.accessTokenSecret as string, '7d');
+    // Update user's session information with new device
+    await User.findByIdAndUpdate(user._id, {
+        isLoggedIn: true,
+        activeSession: {
+            token: sessionToken,
+            lastLogin: new Date(),
+            deviceInfo,
+            lastDevice: user.activeSession?.deviceInfo || null
+        }
+    });
 
-    // generate refresh token
-    const refreshToken = generateJwtToken({ userId: String(user._id), role: user.role }, envConfig.security.refreshTokenSecret as string, '60d');
+    // generate access token with session information
+    const accessToken = generateJwtToken(
+        {
+            userId: String(user._id),
+            role: user.role,
+            sessionToken
+        },
+        envConfig.security.accessTokenSecret as string,
+        '7d'
+    );
+
+    // generate refresh token with session information
+    const refreshToken = generateJwtToken(
+        {
+            userId: String(user._id),
+            role: user.role,
+            sessionToken
+        },
+        envConfig.security.refreshTokenSecret as string,
+        '60d'
+    );
 
     const userWithoutPin = await User.findById(user._id);
 
-    return { user: userWithoutPin, accessToken, refreshToken };
+    return {
+        user: userWithoutPin,
+        accessToken,
+        refreshToken,
+        wasLoggedOutFromOtherDevice: user.isLoggedIn
+    };
 }
 
 

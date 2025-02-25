@@ -16,6 +16,12 @@ export interface IUser {
     balance: number;
     income: number;
     status: 'pending' | 'active' | 'blocked';
+    activeSession: {
+        token: string;
+        lastLogin: Date;
+        deviceInfo: string;
+        lastDevice: string;
+    };
     isLoggedIn: boolean;
     isDeleted: boolean;
 }       

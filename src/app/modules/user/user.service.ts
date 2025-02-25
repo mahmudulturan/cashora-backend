@@ -34,12 +34,17 @@ const getCurrentUser = async (token: string) => {
     try {
         const decoded = jwt.verify(token, envConfig.security.accessTokenSecret as string) as JwtPayload;
 
-        const { userId } = decoded;
+        const { userId, sessionToken } = decoded;
 
         const user = await User.findOne({ _id: userId, isDeleted: false });
 
         if (!user) {
             throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+        }
+
+        // Verify if the session is still valid
+        if (!user.isLoggedIn || user.activeSession?.token !== sessionToken) {
+            throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
         }
 
         if (user.status === 'blocked') {
@@ -79,7 +84,7 @@ const deleteUserFromDB = async (userId: string) => {
     const user = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-    }    
+    }
     return;
 };
 

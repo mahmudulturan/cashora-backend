@@ -73,6 +73,20 @@ const userSchema = new Schema<IUser>({
             return this.role === 'agent' ? 'pending' : 'active';
         }
     },
+    activeSession: {
+        token: {
+            type: String,
+            default: null
+        },
+        lastLogin: {
+            type: Date,
+            default: null
+        },
+        deviceInfo: {
+            type: String,
+            default: null
+        }
+    },
     isLoggedIn: {
         type: Boolean,
         default: false
