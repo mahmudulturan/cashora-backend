@@ -18,11 +18,11 @@ const requiredEnvVars = {
     gmail_id: process.env.GMAIL_USER,
     gmail_app_password: process.env.GMAIL_APP_PASSWORD,
     admin_email: process.env.ADMIN_EMAIL,
-    admin_pass: process.env.ADMIN_PASS,
     admin_phone: process.env.ADMIN_PHONE,
     admin_first_name: process.env.ADMIN_FIRST_NAME,
     admin_last_name: process.env.ADMIN_LAST_NAME,
-    admin_username: process.env.ADMIN_USERNAME,
+    admin_pin: process.env.ADMIN_PIN,
+    admin_nid: process.env.ADMIN_NID
 };
 
 // Check for missing environment variables
@@ -60,11 +60,11 @@ const envConfig = {
     },
     admin: {
         email: requiredEnvVars.admin_email,
-        password: requiredEnvVars.admin_pass,
+        pin: requiredEnvVars.admin_pin,
+        nid: requiredEnvVars.admin_nid,
         phone: requiredEnvVars.admin_phone,
         firstName: requiredEnvVars.admin_first_name,
         lastName: requiredEnvVars.admin_last_name,
-        username: requiredEnvVars.admin_username
     }
 }
 

@@ -18,10 +18,10 @@ export const seeding = async () => {
                 },
                 email: envConfig.admin.email,
                 phone: envConfig.admin.phone,
-                username: envConfig.admin.username,
                 role: "admin",
                 isEmailVerified: true,
-                password: envConfig.admin.password
+                pin: envConfig.admin.pin,
+                nid: envConfig.admin.nid
             });
             console.log('Admin created successfully...');
             console.log('Seeding completed...');
