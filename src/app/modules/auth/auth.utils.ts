@@ -1,5 +1,4 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
-import User from '../user/user.model';
 
 type StringValue = "7d" | "60d"
 
@@ -20,23 +19,6 @@ export const generateJwtToken = (
 export const verifyToken = (token: string, secret: string) => {
     return jwt.verify(token, secret) as JwtPayload;
 };
-
-
-// generate username
-export const generateUsername = async (firstName: string, lastName: string) => {
-    let username = `${firstName}${lastName}`.toLowerCase();
-    let isExist = await User.findOne({ username });
-    let suffix = 1;
-
-    while (isExist) {
-        username = `${firstName}${lastName}${suffix}`.toLowerCase();
-        isExist = await User.findOne({ username });
-        suffix++;
-    }
-
-    return username;
-}
-
 
 // generate otp code
 export const otpGenerator = () => {

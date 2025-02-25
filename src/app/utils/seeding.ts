@@ -19,7 +19,6 @@ export const seeding = async () => {
                 email: envConfig.admin.email,
                 phone: envConfig.admin.phone,
                 role: "admin",
-                isEmailVerified: true,
                 pin: envConfig.admin.pin,
                 nid: envConfig.admin.nid
             });
