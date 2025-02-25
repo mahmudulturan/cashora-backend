@@ -14,3 +14,10 @@ export interface ITransactionFees {
     adminFee: number;
     agentCommission: number;
 }
+
+export interface ITransactionPayload {
+    sender: Types.ObjectId;
+    receiver: Types.ObjectId;
+    amount: number;
+    note: string;
+}
