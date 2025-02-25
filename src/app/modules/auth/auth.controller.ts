@@ -13,7 +13,7 @@ const registerUser = catchAsync(async (req, res) => {
     res.status(httpStatus.CREATED)
         .cookie("access-token", accessToken, accessTokenCookieOptions)
         .cookie("refresh-token", refreshToken, refreshTokenCookieOptions)
-        .send({ success: true, message: "Instructor registered successfully!", data: user });
+        .send({ success: true, message: `${user?.role === 'user' ? 'User' : user?.role === 'agent' ? 'Agent' : 'Admin'} registered successfully!`, data: user });
 })
 
 
@@ -40,30 +40,6 @@ const changePassword = catchAsync(async (req, res) => {
 })
 
 
-// send verification email controller
-const sendVerificationEmail = catchAsync(async (req, res) => {
-    await authServices.sendVerificationEmail(req.params.email);
-
-    sendResponse(res, {
-        success: true,
-        status: httpStatus.OK,
-        message: 'Verification email sent successfully'
-    })
-})
-
-
-// verify Email controller
-const verifyEmail = catchAsync(async (req, res) => {
-    const { accessToken, refreshToken } = await authServices.verifyEmail(req?.query.token as string, req.body);
-
-    // send response with refresh and access token
-    res.status(httpStatus.OK)
-        .cookie("access-token", accessToken, accessTokenCookieOptions)
-        .cookie("refresh-token", refreshToken, refreshTokenCookieOptions)
-        .send({ success: true, message: "Email verified successfully." });
-})
-
-
 // send reset password email controller
 const sendResetPasswordEmail = catchAsync(async (req, res) => {
     await authServices.sendResetPasswordEmail(req.params.email);
@@ -75,6 +51,8 @@ const sendResetPasswordEmail = catchAsync(async (req, res) => {
     })
 })
 
+
+// verify reset password otp controller
 const verifyResetPasswordOtp = catchAsync(async (req, res) => {
     const verifyToken = await authServices.verifyResetPasswordOtp(req.body);
     sendResponse(res, {
@@ -124,8 +102,6 @@ export const authController = {
     registerUser,
     loginUser,
     changePassword,
-    sendVerificationEmail,
-    verifyEmail,
     sendResetPasswordEmail,
     verifyResetPasswordOtp,
     resetPassword,

@@ -23,22 +23,9 @@ router.post('/login',
 
 // change password route
 router.patch('/password/change',
-    requestValidation(authValidation.changePasswordValidationSchema),
     verifyUser('user', 'admin'),
+    requestValidation(authValidation.changePasswordValidationSchema),
     authController.changePassword);
-
-
-// send verification email route
-router.post('/email/verification/:email',
-    authRateLimiters.verificationEmailLimit,
-    authController.sendVerificationEmail);
-
-
-// verify email route
-router.patch('/email/verify-email',
-    requestValidation(authValidation.verifyEmailValidationSchema),
-    authController.verifyEmail);
-
 
 // send reset password email route
 router.post('/password/reset-email/:email',
