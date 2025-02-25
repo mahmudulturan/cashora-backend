@@ -6,7 +6,7 @@ interface TransactionFees {
 
 export const calculateTransactionFees = (amount: number, type: 'send_money' | 'cash_out' | 'cash_in'): TransactionFees => {
     const fees: TransactionFees = {
-        transactionFee: 0,
+        transactionFee: 5,
         adminFee: 5,
         agentCommission: 0
     };
@@ -19,6 +19,8 @@ export const calculateTransactionFees = (amount: number, type: 'send_money' | 'c
         fees.adminFee += amount * 0.005;
     } else if (type === 'cash_in') {
         fees.transactionFee = 0;
+        fees.adminFee = 0;
+        fees.agentCommission = 0;
     } 
 
     return fees;

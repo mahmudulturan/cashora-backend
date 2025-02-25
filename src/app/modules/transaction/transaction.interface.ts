@@ -16,8 +16,7 @@ export interface ITransactionFees {
 }
 
 export interface ITransactionPayload {
-    sender: Types.ObjectId;
-    receiver: Types.ObjectId;
+    receiver: string;
     amount: number;
     note: string;
 }

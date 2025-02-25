@@ -5,7 +5,7 @@ import sendResponse from "../../utils/sendResponse";
 
 
 const sendMoney = catchAsync(async (req, res) => {
-    const transaction = await transactionService.sendMoney(req.body);
+    const transaction = await transactionService.sendMoney(req.user?.userId, req.body);
     sendResponse(res, {
         success: true,
         status: httpStatus.OK,

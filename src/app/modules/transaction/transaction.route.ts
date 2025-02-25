@@ -6,15 +6,15 @@ import verifyUser from "../../middlewares/verifyUser";
 
 const router = Router();
 
-router.post('/send-money',
+router.post('/send-money',  
     verifyUser("user"),
-    requestValidation(transactionValidation.sendMoneyValidationSchema),
+    requestValidation(transactionValidation.transferAmountValidationSchema),
     transactionController.sendMoney);
 
 
 router.post('/cash-in',
     verifyUser("agent"),
-    requestValidation(transactionValidation.cashInValidationSchema),
+    requestValidation(transactionValidation.transferAmountValidationSchema),
     transactionController.cashIn);
 
 export default router;
