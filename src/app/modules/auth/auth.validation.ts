@@ -1,5 +1,10 @@
 import z from 'zod';
 
+const pinValidationSchema = z.string({
+    required_error: 'Pin is required',
+    invalid_type_error: 'Pin must be a string'
+}).min(5, { message: 'Pin must be 5 digits' }).max(5, { message: 'Pin must be 5 digits' });
+
 // register user validation schema
 const registerUserValidationSchema = z.object({
     body: z.object({
@@ -29,62 +34,49 @@ const registerUserValidationSchema = z.object({
         }).min(11, {
             message: 'Phone number must be 11 digits'
         }),
-        password: z.string({
-            required_error: 'Password is required',
-            invalid_type_error: 'Password must be a string'
+        role: z.enum(['user', 'agent'], {
+            invalid_type_error: 'Role must be "user" or "agent"'
         }),
-        profileImg: z.string({
-            invalid_type_error: 'Profile image must be a url'
-        }).optional(),
-        dateOfBirth: z.string({
-            invalid_type_error: 'Date of birth must be a date'
-        }).date().optional(),
-        gender: z.enum(['male', 'female', 'other'], {
-            invalid_type_error: 'Gender must be "male", "female" or "other"',
-        }).optional(),
+        pin: pinValidationSchema,
+        nid: z.string({
+            required_error: 'NID is required',
+            invalid_type_error: 'NID must be a string'
+        }).max(10, {
+            message: 'NID must be 10 digits'
+        }).min(10, {
+            message: 'NID must be 10 digits'
+        })
     })
 })
 
 // login validation schema
 const loginUserValidationSchema = z.object({
     body: z.object({
-        email: z.string({
-            required_error: 'Email is required',
+        emailOrPhone: z.string({
+            required_error: 'Email or phone number is required',
         }).refine(value => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const mobileRegex = /^[0-9]{10,10}$/;
             return emailRegex.test(value) || mobileRegex.test(value);
         }, {
-            message: 'Must be a valid email',
+            message: 'Must be a valid email or phone number',
         }),
-        password: z.string({
-            required_error: 'Password is required',
-            invalid_type_error: 'Password must be a string',
-        })
+        pin: pinValidationSchema
     }),
 });
 
 // change password validation schema
 const changePasswordValidationSchema = z.object({
     body: z.object({
-        oldPassword: z.string({
-            required_error: 'Old password is required',
-            invalid_type_error: 'Old password must be a string'
-        }),
-        newPassword: z.string({
-            required_error: 'New password is required',
-            invalid_type_error: 'New password must be a string'
-        })
+        oldPin: pinValidationSchema,
+        newPin: pinValidationSchema
     })
 })
 
 // reset password validation schema
 const resetPasswordValidationSchema = z.object({
     body: z.object({
-        newPassword: z.string({
-            required_error: 'New password is required',
-            invalid_type_error: 'New password must be a string'
-        })
+        newPin: pinValidationSchema
     })
 })
 
@@ -102,25 +94,11 @@ const verifyOtpValidationSchema = z.object({
     })
 })
 
-// verify email validation schema 
-const verifyEmailValidationSchema = z.object({
-    body: z.object({
-        email: z.string({
-            required_error: 'Email is required',
-            invalid_type_error: 'Email must be a string'
-        }).optional(),
-        verificationCode: z.string({
-            required_error: 'Verification code is required',
-            invalid_type_error: 'Verification code must be a string'
-        }).optional()
-    })
-})
 
 export const authValidation = {
     registerUserValidationSchema,
     loginUserValidationSchema,
     changePasswordValidationSchema,
     resetPasswordValidationSchema,
-    verifyOtpValidationSchema,
-    verifyEmailValidationSchema
+    verifyOtpValidationSchema
 }   
