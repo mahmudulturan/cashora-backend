@@ -10,9 +10,9 @@ const getTotalSystemMoney = async (): Promise<number> => {
 };
 
 const getAdminIncome = async (): Promise<number> => {
-    const result = await User.aggregate([
-        { $match: { role: 'admin' } },
-        { $group: { _id: null, total: { $sum: '$income' } } }
+    const result = await Transaction.aggregate([
+        { $match: { type: { $in: ['send_money', 'cash_out'] } } },
+        { $group: { _id: null, total: { $sum: '$fees.adminFee' } } }
     ]);
     return result[0]?.total || 0;
 };
