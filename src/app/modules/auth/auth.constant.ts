@@ -1,16 +1,16 @@
 import envConfig from "../../configs/env.config";
 import { ICookieOptions } from "../../interfaces/cookie";
 
-const liveDomain = envConfig.client.liveUrl!.split('//')[1].split('/')[0];
+// const liveDomain = envConfig.client.liveUrl!.split('//')[1].split('/')[0];
 
-const cookieDomain = envConfig.app.nodeEnv === 'production' ? liveDomain : 'localhost';
+// // const cookieDomain = envConfig.app.nodeEnv === 'production' ? liveDomain : 'localhost';
 const cookieHttpOnly = envConfig.app.nodeEnv === 'production';
 const cookieSameSite = envConfig.app.nodeEnv === 'production' ? 'none' : 'lax';
 const cookieSecure = envConfig.app.nodeEnv === 'production';
 
 // Access token cookie options (7 days)
 export const accessTokenCookieOptions: ICookieOptions = {
-    domain: cookieDomain,
+    // // domain: cookieDomain,
     httpOnly: cookieHttpOnly,
     sameSite: cookieSameSite,
     secure: cookieSecure,
@@ -19,7 +19,7 @@ export const accessTokenCookieOptions: ICookieOptions = {
 
 // Refresh token cookie options (2 months)
 export const refreshTokenCookieOptions: ICookieOptions = {
-    domain: cookieDomain,
+    // // domain: cookieDomain,
     httpOnly: cookieHttpOnly,
     sameSite: cookieSameSite,
     secure: cookieSecure,
@@ -28,7 +28,7 @@ export const refreshTokenCookieOptions: ICookieOptions = {
 
 // Log out cookie options
 export const logOutCookieOptions: ICookieOptions = {
-    domain: cookieDomain,
+    // // domain: cookieDomain,
     httpOnly: cookieHttpOnly,
     sameSite: cookieSameSite,
     secure: cookieSecure,
