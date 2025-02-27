@@ -1,5 +1,4 @@
 import envConfig from "../configs/env.config"
-import logger from "./logger"
 import nodemailer from 'nodemailer'
 import pug from 'pug'
 import path from 'path'
@@ -61,17 +60,7 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
             html,
             attachments
         })
-
-        if (envConfig.app.nodeEnv === 'development') {
-            logger.info('Email sent', { to, subject, template })
-        }
     } catch (error) {
-        logger.error('Email sending failed', {
-            error,
-            to,
-            subject,
-            template
-        })
         throw error
     }
 }
