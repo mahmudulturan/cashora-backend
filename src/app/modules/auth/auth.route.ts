@@ -51,7 +51,7 @@ router.post('/token/refresh',
 
 // logout route
 router.get('/logout',
-    verifyUser('user', 'admin'),
+    verifyUser('user', 'admin', "agent"),
     authController.logout);
 
 export default router;
