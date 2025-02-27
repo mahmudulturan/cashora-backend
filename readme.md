@@ -103,44 +103,28 @@ src/
 ## 🔐 API Endpoints
 
 ### 1. Authentication
-- `POST /auth/register` - User & agent registration
+- `POST /auth/register` - User registration
 - `POST /auth/login` - Login with mobile/email & PIN
-- `POST /auth/logout` - Logout (invalidate token)
-- `POST /auth/refresh-token` - Refresh JWT token
-- `POST /auth/reset-pin` - Reset PIN
+- `GET /auth/logout` - Logout (invalidate token)
+- `POST /auth/token/refresh` - Refresh token
+- `PATCH /auth/pin/change` - Change PIN
+- `POST /auth/pin/reset-email/:email` - Send reset PIN email
+- `POST /auth/pin/reset/verify-otp` - Verify reset PIN OTP
+- `PATCH /auth/pin/reset/:token` - Reset PIN
 
 ### 2. User
+- `GET /users/all` - Get all users (admin only)
 - `GET /users/me` - Get logged-in user details
-- `GET /users/:id` - Get specific user details (admin only)
-- `PATCH /users/update-profile` - Update user profile
-- `PATCH /users/update-pin` - Change PIN
-- `PATCH /users/block/:id` - Block/unblock a user (admin only)
-- `GET /users/search?phone=xxxxx` - Search user by phone (admin only)
+- `PUT /users/me` - Update user profile
+- `PATCH /users/status/:id` - Update user status (admin only)
+- `DELETE /users/:id` - Delete user (admin only)
 
-### 3. Agent
-- `POST /agents/register` - Register an agent (requires admin approval)
-- `GET /agents` - List pending agent approvals (admin only)
-- `PATCH /agents/approve/:id` - Approve/reject agent (admin only)
-- `PATCH /agents/block/:id` - Block/unblock agent (admin only)
-- `GET /agents/:id` - Get agent details (admin & self)
-
-### 4. Transaction
+### 3. Transaction
 - `POST /transactions/send-money` - Send money to another user
 - `POST /transactions/cash-in` - Deposit money via an agent
 - `POST /transactions/cash-out` - Withdraw money via an agent
 - `GET /transactions/history` - Get logged-in user/agent transaction history
-- `GET /transactions/admin-history` - Get all transactions (admin only)
-- `GET /transactions/:id` - Get specific transaction details (admin only)
-
-### 5. Balance
-- `GET /balance` - Get current balance (user/agent)
-- `GET /balance/system` - Get total system balance (admin only)
-
-### 6. Admin
-- `GET /admin/users` - Get all users (admin only)
-- `GET /admin/agents` - Get all agents (admin only)
-- `PATCH /admin/recharge-agent/:id` - Approve agent balance recharge request
-- `PATCH /admin/withdraw-request/:id` - Approve/deny agent withdrawal request
+- `GET /transactions/all-history` - Get all transactions (admin only)
 
 ### 7. Notification
 - `GET /notifications` - Get user notifications
